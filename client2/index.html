@@ -26,9 +26,9 @@
       </div>
       <div class="song-controls">
         <i class="fas fa-step-backward" onclick="player.nextTrack()"></i>
-        <i class="fas fa-play" id="play" onclick="toggle()"></i>
+        <i class="fas fa-play" id="play"></i>
         <i class="fas fa-step-forward" onclick="player.previousTrack()"></i>
-        <button onclick="authorize()">Sign in</button>
+        <button id="authorize">Sign in</button>
       </div>
     </aside>
 
@@ -36,14 +36,20 @@
     <script src="main.js"></script>
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script>
-      const queryString = window.location.search;
-      const urlParams = new URLSearchParams(queryString);
-      const token = urlParams.get('product');
-
+      document.getElementById('play').addEventListener('click', toggle);
+      document.getElementById('authorize').addEventListener('click', authorize);
       var player;
       var paused = true;
+      var hash = window.location.hash.substr(1);
+      var result = hash.split('&').reduce(function (res, item) {
+        var parts = item.split('=');
+        res[parts[0]] = parts[1];
+        return res;
+      }, {});
+      const token = result["access_token"];
 
       window.onSpotifyWebPlaybackSDKReady = () => {
+        console.log(token);
         player = new Spotify.Player({
           name: 'Web Playback SDK Quick Start Player',
           getOAuthToken: (cb) => {
