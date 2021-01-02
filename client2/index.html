@@ -46,7 +46,7 @@
         res[parts[0]] = parts[1];
         return res;
       }, {});
-      const token = result["access_token"];
+      const token = result['access_token'];
 
       window.onSpotifyWebPlaybackSDKReady = () => {
         console.log(token);
@@ -55,6 +55,12 @@
           getOAuthToken: (cb) => {
             cb(token);
           },
+        });
+
+        player.on('player_state_changed', (state) => {
+          console.log(state);
+          // $('#current-track').attr('src', state.track_window.current_track.album.images[0].url);
+          // $('#current-track-name').text(state.track_window.current_track.name);
         });
 
         // Error handling
@@ -103,7 +109,28 @@
       }
 
       function authorize() {
-        window.open('https://accounts.spotify.com/authorize?client_id=dc633f6952334b5292540fa7016f25b0&response_type=token&redirect_uri=https://dance-party.vercel.app/');
+        const hash = window.location.hash
+          .substring(1)
+          .split('&')
+          .reduce(function (initial, item) {
+            if (item) {
+              var parts = item.split('=');
+              initial[parts[0]] = decodeURIComponent(parts[1]);
+            }
+            return initial;
+          }, {});
+        window.location.hash = '';
+
+        // Set token
+        let _token = hash.access_token;
+
+        const authEndpoint = 'https://accounts.spotify.com/authorize';
+        const clientId = '2ca11aea349e46dda03164bae582644e';
+        const redirectUri = 'http://localhost:1234';
+        const scopes = ['streaming', 'user-modify-playback-state'];
+        if (!_token) {
+          window.location = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join('%20')}&response_type=token&show_dialog=true`;
+        }
       }
     </script>
   </body>
