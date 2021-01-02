@@ -15,9 +15,7 @@ let frameNo = 0;
 
 let canvas = document.getElementById('canvas-container');
 let two = new Two({
-  type: Two.Types.svg,
-  width: 1200,
-  height: 1200,
+  type: Two.Types.svg
 }).appendTo(canvas);
 
 let poseDrawer = new PoseDrawerTwo(two);

@@ -1,24 +1,103 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Dancing Bloppie</title>
+    <title>Dancing Party!!</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <script src="https://kit.fontawesome.com/a1a8b812e3.js" crossorigin="anonymous"></script>
   </head>
 
-  <body>
-    <video id="video" playsinline style="transform: scaleX(-1)"></video>
-
-    <canvas id="output"></canvas>
-    <h1 id="count-down"></h1>
-
-    <div class="buttons">
-      <button id="record-button">Start Recording</button>
-      <button id="camera-button">camera</button>
+  <body class="dark">
+    <div id="canvas-container">
+      <h1 id="count-down">Test</h1>
+      <div class="buttons">
+        <button id="record-button">Start Recording</button>
+        <button id="camera-button">camera</button>
+      </div>
     </div>
-    <div id="canvas-container"></div>
+    
+    <canvas id="output"></canvas>
+
+    <aside class="sidebar">
+      <video id="video" playsinline style="transform: scaleX(-1)"></video>
+      <div class="songs">
+        <h1 class="song-header">Songs</h1>
+      </div>
+      <div class="song-controls">
+        <i class="fas fa-step-backward" onclick="player.nextTrack()"></i>
+        <i class="fas fa-play" id="play" onclick="toggle()"></i>
+        <i class="fas fa-step-forward" onclick="player.previousTrack()"></i>
+        <button onclick="authorize()">Sign in</button>
+      </div>
+    </aside>
+
     <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
     <script src="main.js"></script>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <script>
+
+      var player;
+      var paused = true;
+
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        const token = 'BQC5rD4M6WuZHJBunnCzDUI22IIaVBWhFx08MtWcrZxqnDdBM3wX5mafcxcqmi1qT3fGpbYR6L_C33BSHV91fPalWXPHn5ZkfFTZdFeyvfUXkiSa89OrcautTrjtnfG_oioVy7MbR60N2uM04XMX-TglLeWk_o8CmV4p-IrP4CIk1TrlSeM';
+        player = new Spotify.Player({
+          name: 'Web Playback SDK Quick Start Player',
+          getOAuthToken: (cb) => {
+            cb(token);
+          },
+        });
+
+        // Error handling
+        player.addListener('initialization_error', ({ message }) => {
+          console.error(message);
+        });
+        player.addListener('authentication_error', ({ message }) => {
+          console.error(message);
+        });
+        player.addListener('account_error', ({ message }) => {
+          console.error(message);
+        });
+        player.addListener('playback_error', ({ message }) => {
+          console.error(message);
+        });
+
+        // Playback status updates
+        player.addListener('player_state_changed', (state) => {
+          console.log(state);
+        });
+
+        // Ready
+        player.addListener('ready', ({ device_id }) => {
+          console.log('Ready with Device ID', device_id);
+        });
+
+        // Not Ready
+        player.addListener('not_ready', ({ device_id }) => {
+          console.log('Device ID has gone offline', device_id);
+        });
+
+        // Connect to the player!
+        player.connect();
+      };
+
+      function toggle() {
+        if (paused) {
+          document.getElementById("play").classList.replace("fa-play", "fa-pause");
+          player.resume()
+          paused = false;
+        }
+        else {
+          document.getElementById("play").classList.replace("fa-pause", "fa-play");
+          player.pause()
+          paused = true;
+        }
+      }
+
+      function authorize() {
+        window.open("https://accounts.spotify.com/authorize?client_id=dc633f6952334b5292540fa7016f25b0&response_type=token&redirect_uri=localhost:1234/");
+      }
+    </script>
   </body>
 </html>
