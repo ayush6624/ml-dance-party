@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dancing Bloppie</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+
+  <body>
+    <video id="video" playsinline style="transform: scaleX(-1)"></video>
+
+    <canvas id="output"></canvas>
+    <h1 id="count-down"></h1>
+
+    <div class="buttons">
+      <button id="record-button">Start Recording</button>
+      <button id="camera-button">camera</button>
+    </div>
+    <div id="canvas-container"></div>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

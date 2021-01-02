@@ -7,6 +7,7 @@ export const useSpotify = () => {
   useEffect(() => {
     window.onSpotifyWebPlaybackSDKReady = () => {
       const player = new window.Spotify.Player({
+        token: "BQA7qaj2FQjnn1oaAQ6iZWFevM6O3ZgapKdlhG-Xui-CpXYXiPajfy0aWcANiP6-gXE5XdyF-Cky3ao2Vndo0bsZiePgw7OxO1C9v6wLSAB0ic5NnXJR712n0ghQoJXHBgvAi5BkXKsqabdyxqUcGCqlb6fzK7aIRPQtCD9icbiWfqvq94Q",
         name: 'Web Playback SDK Quick Start Player',
         getOAuthToken: (cb) => {
           cb(token);
