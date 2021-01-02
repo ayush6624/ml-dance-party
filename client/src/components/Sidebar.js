@@ -10,8 +10,11 @@ export const Sidebar = () => {
     const [paused, setPaused] = useState(true);
 
     return (
-        <section className="sidebar">
+        <aside className="sidebar">
             <Video />
+            <div className="songs">
+                <h1 className="song-header">Songs</h1>
+            </div>
             <div className="song-controls">
                 <FaStepBackward
                     onClick={() => {
@@ -38,6 +41,6 @@ export const Sidebar = () => {
                     }}
                 />
             </div>
-        </section>
+        </aside>
     )
 }
