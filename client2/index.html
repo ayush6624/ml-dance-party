@@ -16,7 +16,7 @@
         <button id="camera-button">camera</button>
       </div>
     </div>
-    
+
     <canvas id="output"></canvas>
 
     <aside class="sidebar">
@@ -36,12 +36,14 @@
     <script src="main.js"></script>
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script>
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const token = urlParams.get('product');
 
       var player;
       var paused = true;
 
       window.onSpotifyWebPlaybackSDKReady = () => {
-        const token = 'BQC5rD4M6WuZHJBunnCzDUI22IIaVBWhFx08MtWcrZxqnDdBM3wX5mafcxcqmi1qT3fGpbYR6L_C33BSHV91fPalWXPHn5ZkfFTZdFeyvfUXkiSa89OrcautTrjtnfG_oioVy7MbR60N2uM04XMX-TglLeWk_o8CmV4p-IrP4CIk1TrlSeM';
         player = new Spotify.Player({
           name: 'Web Playback SDK Quick Start Player',
           getOAuthToken: (cb) => {
@@ -84,19 +86,18 @@
 
       function toggle() {
         if (paused) {
-          document.getElementById("play").classList.replace("fa-play", "fa-pause");
-          player.resume()
+          document.getElementById('play').classList.replace('fa-play', 'fa-pause');
+          player.resume();
           paused = false;
-        }
-        else {
-          document.getElementById("play").classList.replace("fa-pause", "fa-play");
-          player.pause()
+        } else {
+          document.getElementById('play').classList.replace('fa-pause', 'fa-play');
+          player.pause();
           paused = true;
         }
       }
 
       function authorize() {
-        window.open("https://accounts.spotify.com/authorize?client_id=dc633f6952334b5292540fa7016f25b0&response_type=token&redirect_uri=localhost:1234/");
+        window.open('https://accounts.spotify.com/authorize?client_id=dc633f6952334b5292540fa7016f25b0&response_type=token&redirect_uri=https://dance-party.vercel.app/');
       }
     </script>
   </body>
