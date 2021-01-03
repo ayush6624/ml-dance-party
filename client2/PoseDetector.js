@@ -1,5 +1,4 @@
 import * as posenet from '@tensorflow-models/posenet';
-// import '@tensorflow/tfjs-backend-cpu';
 
 export default class PoseDetector {
   constructor(callback) {
@@ -11,13 +10,17 @@ export default class PoseDetector {
   }
 
   async asyncSetup() {
-    // this.net = await posenet.load({
-    //   architecture: 'MobileNetV1',
-    //   outputStride: 16,
-    //   multiplier: 0.75,
-    //   inputResolution: { width: 257, height: 200 },
-    //   quantBytes: 2,
-    // });
+    this.net = await posenet.load({
+      architecture: 'MobileNetV1',
+      outputStride: 16,
+      multiplier: 0.75,
+      inputResolution: { width: 257, height: 200 },
+      quantBytes: 2,
+      // architecture: 'MobileNetV1',
+      // outputStride: 16,
+      // inputResolution: { width: 640, height: 480 },
+      // multiplier: 0.75,
+    });
 
     console.log('Model loaded');
 
@@ -64,9 +67,9 @@ export default class PoseDetector {
 
     let poses = [];
 
-    let allPoses = await this.net.estimateMultiplePoses(this.video, {
+    let allPoses = await this.net.estimatePoses(this.video, {
       flipHorizontal: true,
-      //   decodingMethod: 'multi-person',
+      decodingMethod: 'multi-person',
       maxDetections: 3,
       scoreThreshold: 0.1,
       nmsRadius: 30,

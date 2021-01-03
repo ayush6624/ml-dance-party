@@ -9,6 +9,7 @@ io.on('connection', (socket) => {
 
   socket.on('video', (message) => {
     socket.broadcast.emit('video', message);
+    // io.sockets.emit('video', message);
   });
 });
 

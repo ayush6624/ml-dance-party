@@ -1,7 +1,5 @@
 import { Sidebar } from './Sidebar';
-import socketIOClient from 'socket.io-client';
 import { useEffect, useState } from 'react';
-import { ENDPOINT } from '../lib/constants';
 
 function App() {
   useEffect(() => {

@@ -1,0 +1,21 @@
+:root {
+    --bg-color: #eeeeee;
+    --bg-color-alt: #ffffff;
+    --text-color: #222222;
+    --text-color-alt: #eeeeee;
+    --modeswap: color 0.5s ease-in-out, background-color 0.5s ease-in-out, border 0.5s ease-in-out;
+}
+
+.light {
+    --bg-color: #eeeeee;
+    --bg-color-alt: #ffffff;
+    --text-color: #222222;
+    --text-color-alt: #555555;
+}
+
+.dark {
+    --bg-color: #222222;
+    --bg-color-alt: #444444;
+    --text-color: #eeeeee;
+    --text-color-alt: #999999;
+}
