@@ -11,7 +11,7 @@ export default class PoseDrawerTwo {
     // let score = poses.score;
     // let keypoints = poses.keypoints;
     let poses = JSON.parse(JSON.stringify(posesOg));
-    poses.forEach(({ score, keypoints }) => {
+    poses.forEach(({ score, keypoints, name }) => {
       if (score >= 0.2) {
         // you can also remove the low score entries!! fromm the test data
         // Remove hips and shoulders from skeleton,
@@ -45,7 +45,7 @@ export default class PoseDrawerTwo {
           keypoint.position.x += 300;
           keypoint.position.y += 300;
         }
-        this.drawSkeleton(keypoints, 0.65);
+        this.drawSkeleton(keypoints, 0.65, name);
       }
     });
   }
@@ -53,7 +53,7 @@ export default class PoseDrawerTwo {
   /*
    * Draws a pose skeleton by looking up all adjacent keypoints/joints
    */
-  drawSkeleton(keypoints, scale) {
+  drawSkeleton(keypoints, scale, userName) {
     let color = '#fe53bb';
 
     // Middle stick
@@ -91,7 +91,11 @@ export default class PoseDrawerTwo {
     lEye.fill = 'orangered';
     rEye.fill = 'orangered';
 
-    let entireGroup = this.two.makeGroup(middle, leftA1, leftA2, rightA1, rightA2, rightB1, rightB2, leftB1, leftB2, neckFinal, headCircle, lEye, rEye);
+    let nameTag = this.two.makeText(userName, keypoints[0].position.x, keypoints[0].position.y - 90, {
+      size: 30,
+    });
+
+    let entireGroup = this.two.makeGroup(middle, leftA1, leftA2, rightA1, rightA2, rightB1, rightB2, leftB1, leftB2, neckFinal, headCircle, lEye, rEye, nameTag);
     entireGroup.scale = 0.5;
   }
 

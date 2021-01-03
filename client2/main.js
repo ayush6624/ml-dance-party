@@ -5,6 +5,7 @@ import Stats from 'stats.js';
 import Two from 'two.js';
 
 let poseDetector = new PoseDetector(loop);
+let personName = 'Anonymous Jimmy';
 
 const socket = io('http://localhost:3030');
 // const socket = io('https://dance.ayushgoyal.dev');
@@ -12,7 +13,6 @@ const socket = io('http://localhost:3030');
 socket.on('message', (text) => {
   console.log(text);
 });
-socket.on('connection', (msg) => socket.emit('connected'));
 
 const canvas = document.getElementById('output');
 const ctx = canvas.getContext('2d');
@@ -33,7 +33,7 @@ async function loop() {
   let poseData;
   poseData = await poseDetector.poseDetectionFrame();
   if (recording) {
-    console.log('whyyyy');
+    poseData[0].name = personName;
     socket.emit('video', JSON.stringify(poseData));
   }
   let blop;
@@ -57,14 +57,12 @@ let poseDrawer2 = new PoseDrawerTwo(two);
 let keypoints;
 
 socket.on('video', (data) => {
-  console.log('receiving');
   keypoints = JSON.parse(data);
 });
 // keypoints = [poseRecording];
 
 two
   .bind('update', function (frameCount) {
-    console.log('yeah');
     stats.begin();
     if (keypoints != null) poseDrawer2.drawFrame(keypoints, two);
   })
@@ -78,6 +76,10 @@ two
 document.getElementById('record-button').onclick = function startRecord() {
   record();
 };
+document.getElementById('username').addEventListener('change', (e) => {
+  personName = e.currentTarget.value;
+  console.log(e.currentTarget.value);
+});
 
 function record() {
   console.log('start recording');
@@ -90,10 +92,10 @@ function record() {
 
     if (countDownFrom < 1) {
       document.getElementById('count-down').innerHTML = 'dance!!';
+      recording = true;
       clearInterval(countDown);
     }
 
     countDownFrom--;
   }, 1000);
-  recording = true;
 }

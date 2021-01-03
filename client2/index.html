@@ -15,7 +15,9 @@
 
     <aside class="sidebar">
       <video id="video" playsinline style="transform: scaleX(-1)"></video>
-      <button id="record-button">Start Recording</button>
+      <button id="record-button">Toggle Camera</button>
+      Set your username below!
+      <input type="text" id="username" value="Anonymous Jimmy" />
       <div class="songs" id="song-list"></div>
       <div class="controls">
         <div id="song-info">
@@ -44,7 +46,7 @@
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script>
       var player;
-      var trackList = "<h1>Loading</h1>";
+      var trackList = '<h1>Loading</h1>';
       const token = hash();
 
       if (token) {
