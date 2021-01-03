@@ -45,7 +45,7 @@ export default class PoseDrawerTwo {
           keypoint.position.x += 300;
           keypoint.position.y += 300;
         }
-        this.drawSkeleton(keypoints, 0.15);
+        this.drawSkeleton(keypoints, 0.65);
       }
     });
   }
@@ -53,32 +53,32 @@ export default class PoseDrawerTwo {
   /*
    * Draws a pose skeleton by looking up all adjacent keypoints/joints
    */
-  drawSkeleton(keypoints, scale = 1) {
+  drawSkeleton(keypoints, scale) {
     let color = '#fe53bb';
 
     // Middle stick
-    this.drawSegment(this.toTuple(keypoints[9].position), this.toTuple(keypoints[10].position));
+    let middle = this.drawSegment(this.toTuple(keypoints[9].position), this.toTuple(keypoints[10].position));
     // this.two.makeLine(keypoints[9].position.x, keypoints[9].position.y, 126, 352);
     // Left arm
-    this.drawSegment(this.toTuple(keypoints[1].position), this.toTuple(keypoints[3].position));
-    this.drawSegment(this.toTuple(keypoints[1].position), this.toTuple(keypoints[9].position));
+    let leftA1 = this.drawSegment(this.toTuple(keypoints[1].position), this.toTuple(keypoints[3].position));
+    let leftA2 = this.drawSegment(this.toTuple(keypoints[1].position), this.toTuple(keypoints[9].position));
 
     // Right arm
-    this.drawSegment(this.toTuple(keypoints[2].position), this.toTuple(keypoints[4].position));
-    this.drawSegment(this.toTuple(keypoints[2].position), this.toTuple(keypoints[9].position));
+    let rightA1 = this.drawSegment(this.toTuple(keypoints[2].position), this.toTuple(keypoints[4].position));
+    let rightA2 = this.drawSegment(this.toTuple(keypoints[2].position), this.toTuple(keypoints[9].position));
 
     // Left leg
-    this.drawSegment(this.toTuple(keypoints[5].position), this.toTuple(keypoints[7].position));
-    this.drawSegment(this.toTuple(keypoints[5].position), this.toTuple(keypoints[10].position));
+    let leftB1 = this.drawSegment(this.toTuple(keypoints[5].position), this.toTuple(keypoints[7].position));
+    let leftB2 = this.drawSegment(this.toTuple(keypoints[5].position), this.toTuple(keypoints[10].position));
 
     // Right leg
-    this.drawSegment(this.toTuple(keypoints[6].position), this.toTuple(keypoints[8].position));
-    this.drawSegment(this.toTuple(keypoints[6].position), this.toTuple(keypoints[10].position));
+    let rightB1 = this.drawSegment(this.toTuple(keypoints[6].position), this.toTuple(keypoints[8].position));
+    let rightB2 = this.drawSegment(this.toTuple(keypoints[6].position), this.toTuple(keypoints[10].position));
 
     // Neck
     let neckX = keypoints[0].position.x;
     let neckY = keypoints[0].position.y + 40;
-    this.drawSegment([neckY, neckX], this.toTuple(keypoints[9].position));
+    let neckFinal = this.drawSegment([neckY, neckX], this.toTuple(keypoints[9].position));
 
     // Head
     let headCircle = this.two.makeCircle(keypoints[0].position.x, keypoints[0].position.y, 60);
@@ -90,6 +90,9 @@ export default class PoseDrawerTwo {
     // this.two.makeLine(1, 2, 1000, 2000);
     lEye.fill = 'orangered';
     rEye.fill = 'orangered';
+
+    let entireGroup = this.two.makeGroup(middle, leftA1, leftA2, rightA1, rightA2, rightB1, rightB2, leftB1, leftB2, neckFinal, headCircle, lEye, rEye);
+    entireGroup.scale = 0.5;
   }
 
   /*
@@ -99,6 +102,7 @@ export default class PoseDrawerTwo {
     let line = this.two.makeLine(ax, ay, bx, by);
     line.stroke = 'orangered'; // Accepts all valid css color
     line.linewidth = 3;
+    return line;
   }
 
   /*
