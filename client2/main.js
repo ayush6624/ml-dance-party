@@ -7,8 +7,8 @@ import Two from 'two.js';
 let poseDetector = new PoseDetector(loop);
 let personName = 'Anonymous Jimmy';
 
-const socket = io('http://localhost:3030');
-// const socket = io('https://dance.ayushgoyal.dev');
+// const socket = io('http://localhost:3030');
+const socket = io('https://dance.ayushgoyal.dev');
 
 socket.on('message', (text) => {
   console.log(text);
@@ -27,7 +27,6 @@ document.body.appendChild(stats.dom);
 
 let recording = false;
 
-let frameNo = 0;
 async function loop() {
   stats.begin();
   let poseData;
@@ -42,7 +41,6 @@ async function loop() {
   }
   stats.end();
   requestAnimationFrame(loop);
-  frameNo++;
 }
 
 // Screen.js Starts

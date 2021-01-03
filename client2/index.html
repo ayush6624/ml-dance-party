@@ -191,7 +191,7 @@
 
         const authEndpoint = 'https://accounts.spotify.com/authorize';
         const clientId = '2ca11aea349e46dda03164bae582644e';
-        const redirectUri = 'http://localhost:1234';
+        const redirectUri = 'https://dancealongwith.us';
         const scopes = ['streaming', 'user-modify-playback-state'];
         if (!token) {
           window.location = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join('%20')}&response_type=token&show_dialog=true`;
