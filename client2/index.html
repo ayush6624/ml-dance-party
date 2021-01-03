@@ -1,213 +1,236 @@
 <!DOCTYPE html>
 <html>
-
-<head>
   <title>Dancing Party!!</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" type="text/css" href="index.css" />
   <script src="https://kit.fontawesome.com/a1a8b812e3.js" crossorigin="anonymous"></script>
-</head>
 
-<body class="dark">
-  <div id="canvas-container">
-    <h1 id="count-down">Test</h1>
-  </div>
-
-  <canvas id="output"></canvas>
-
-  <aside class="sidebar">
-    <video id="video" playsinline style="transform: scaleX(-1)"></video>
-    <button id="record-button">Start Recording</button>
-    <div class="songs" id="song-list">
+  <body class="dark">
+    <div id="canvas-container">
+      <h1 id="count-down"></h1>
     </div>
-    <div class="controls">
-      <div id="song-info">
-        <img id="album-image"
-          src="https://community.mp3tag.de/uploads/default/original/2X/a/acf3edeb055e7b77114f9e393d1edeeda37e50c9.png" />
-        <div>
-          <h3>Connect to Spotify!</h3>
-          <p>Choose a song!</p>
+
+    <canvas id="output"></canvas>
+
+    <aside class="sidebar">
+      <video id="video" playsinline style="transform: scaleX(-1)"></video>
+      <button id="record-button">Start Recording</button>
+      <div class="songs" id="song-list"></div>
+      <div class="controls">
+        <div id="song-info">
+          <img id="album-image" src="https://community.mp3tag.de/uploads/default/original/2X/a/acf3edeb055e7b77114f9e393d1edeeda37e50c9.png" />
+          <div>
+            <h3>Connect to Spotify!</h3>
+            <p>Choose a song!</p>
+          </div>
+        </div>
+        <input type="range" min="0" max="1000" value="0" class="volume-slider" id="progress" />
+        <div class="song-controls">
+          <div class="volume">
+            <i class="fas fa-volume-up"></i>
+            <input type="range" min="0" max="100" value="100" class="volume-slider" id="volume" />
+          </div>
+          <i class="fas fa-step-backward" id="prev-song"></i>
+          <i class="fas fa-play" id="play"></i>
+          <i class="fas fa-step-forward" id="next-song"></i>
         </div>
       </div>
-      <input type="range" min="0" max="1000" value="0" class="volume-slider" id="progress">
-      <div class="song-controls">
-        <div class="volume">
-          <i class="fas fa-volume-up"></i>
-          <input type="range" min="0" max="100" value="100" class="volume-slider" id="volume">
-        </div>
-        <i class="fas fa-step-backward" id="prev-song"></i>
-        <i class="fas fa-play" id="play"></i>
-        <i class="fas fa-step-forward" id="next-song"></i>
-      </div>
-    </div>
-  </aside>
+    </aside>
 
-  <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
-  <script src="main.js"></script>
-  <script src="https://sdk.scdn.co/spotify-player.js"></script>
-  <script>
-    var player;
-    const token = hash();
-
-    if (token) {
-      document.getElementById("song-list").innerHTML += "<h1 class='song-header'>Songs</h1>";
-      document.getElementById('play').addEventListener('click', toggle);
-      document.getElementById('volume').addEventListener('change', () => {
-        player.setVolume(document.getElementById("volume").value / 100);
-      });
-      document.getElementById('progress').addEventListener('click', () => {
-        player.getCurrentState().then(state => {
-          player.seek(document.getElementById('progress').value / 1000 * state.duration);
-        });
-      });
-
-      window.onSpotifyWebPlaybackSDKReady = () => {
-        player = new Spotify.Player({
-          name: 'Web Playback SDK Quick Start Player',
-          getOAuthToken: (cb) => {
-            cb(token);
-          },
-        });
-
-
-        document.getElementById('next-song').addEventListener('click', () => { player.nextTrack() });
-        document.getElementById('prev-song').addEventListener('click', () => { player.previousTrack() });
-
-        player.on('player_state_changed', (state) => {
-          let image = state.track_window.current_track.album.images[0].url;
-          let name = state.track_window.current_track.name;
-          let artists = state.track_window.current_track.artists
-            .map(artist => {
-              return artist.name;
-            }).join(", ")
-          document.getElementById("song-info").innerHTML = `<img src="${image}" id="album-image"/><div><h3>${name}</h3><p>${artists}</p></div>`;
-        });
-
-        // Error handling
-        player.addListener('initialization_error', ({ message }) => {
-          console.error(message);
-        });
-        player.addListener('authentication_error', ({ message }) => {
-          console.error(message);
-        });
-        player.addListener('account_error', ({ message }) => {
-          console.error(message);
-        });
-        player.addListener('playback_error', ({ message }) => {
-          console.error(message);
-        });
-
-        // Playback status updates
-        player.addListener('player_state_changed', (state) => {
-          console.log(state);
-        });
-
-        // Ready
-        player.addListener('ready', ({ device_id }) => {
-          console.log('Ready with Device ID', device_id);
-        });
-
-        // Not Ready
-        player.addListener('not_ready', ({ device_id }) => {
-          console.log('Device ID has gone offline', device_id);
-        });
-
-        // Connect to the player!
-        player.connect();
-
-        player.setName("Dance Party!")
-
-        player.on('player_state_changed', (state) => {
-          if (state.paused) {
-            document.getElementById('play').classList.replace('fa-pause', 'fa-play');
-            player.pause();
-            document.getElementById('album-image').style.animation = "";
-          } else {
-            document.getElementById('play').classList.replace('fa-play', 'fa-pause');
-            player.resume();
-            document.getElementById('album-image').style.animation = "rotate 5s linear infinite";
-          }
-          document.getElementById("progress").value = state.position / state.duration * 1000;
-          getTracks();
-        });
-      };
-      setInterval(() => {
-        player.getCurrentState().then(state => {
-          document.getElementById("progress").value = state.position / state.duration * 1000;
-        })
-      }, 1000);
-
-    } else {
-      document.getElementById("song-list").innerHTML += "<div id='authorize'><i class='fab fa-spotify'></i>Sign in with Spotify</div>"
-      document.getElementById('authorize').addEventListener('click', authorize);
-    }
-
-    function toggle() {
-      player.getCurrentState().then(state => {
-        if (state.paused) {
-          document.getElementById('play').classList.replace('fa-play', 'fa-pause');
-          player.resume();
-          document.getElementById('album-image').style.animation = "rotate 5s linear infinite";
-        } else {
-          document.getElementById('play').classList.replace('fa-pause', 'fa-play');
-          player.pause();
-          document.getElementById('album-image').style.animation = "";
-        }
-      });
-    }
-
-    function authorize() {
-
-      // Set token
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="main.js"></script>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <script>
+      var player;
+      var trackList = "<h1>Loading</h1>";
       const token = hash();
 
-      const authEndpoint = 'https://accounts.spotify.com/authorize';
-      const clientId = '2ca11aea349e46dda03164bae582644e';
-      const redirectUri = 'http://localhost:1234';
-      const scopes = ['streaming', 'user-modify-playback-state'];
-      if (!token) {
-        window.location = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join('%20')}&response_type=token&show_dialog=true`;
+      if (token) {
+        document.getElementById('song-list').innerHTML += "<h1 class='song-header'>Songs</h1>";
+        document.getElementById('play').addEventListener('click', toggle);
+        document.getElementById('volume').addEventListener('change', () => {
+          player.setVolume(document.getElementById('volume').value / 100);
+        });
+        document.getElementById('progress').addEventListener('click', () => {
+          player.getCurrentState().then((state) => {
+            player.seek((document.getElementById('progress').value / 1000) * state.duration);
+          });
+        });
+
+        window.onSpotifyWebPlaybackSDKReady = () => {
+          player = new Spotify.Player({
+            name: 'Web Playback SDK Quick Start Player',
+            getOAuthToken: (cb) => {
+              cb(token);
+            },
+          });
+
+          document.getElementById('next-song').addEventListener('click', () => {
+            player.nextTrack();
+          });
+          document.getElementById('prev-song').addEventListener('click', () => {
+            player.previousTrack();
+          });
+
+          player.on('player_state_changed', (state) => {
+            let image = state.track_window.current_track.album.images[0].url;
+            let name = state.track_window.current_track.name;
+            let artists = state.track_window.current_track.artists
+              .map((artist) => {
+                return artist.name;
+              })
+              .join(', ');
+            document.getElementById('song-info').innerHTML = `<img src="${image}" id="album-image"/><div><h3>${name}</h3><p>${artists}</p></div>`;
+          });
+
+          // Error handling
+          player.addListener('initialization_error', ({ message }) => {
+            console.error(message);
+          });
+          player.addListener('authentication_error', ({ message }) => {
+            console.error(message);
+          });
+          player.addListener('account_error', ({ message }) => {
+            console.error(message);
+          });
+          player.addListener('playback_error', ({ message }) => {
+            console.error(message);
+          });
+
+          // Playback status updates
+          player.addListener('player_state_changed', (state) => {
+            console.log(state);
+          });
+
+          // Ready
+
+          const play = (device_id) => {
+            let urlPlayback = 'https://api.spotify.com/v1/me/player/play?device_id=' + device_id;
+            let uri = { context_uri: 'spotify:playlist:37i9dQZF1DXbYM3nMM0oPk', offset: { position: 6 } };
+            fetch(urlPlayback, {
+              method: 'PUT',
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(uri),
+            }).then((data) => console.log(data));
+            // $.ajax({
+            //   type: 'PUT',
+            //   data: '{"uris": "spotify:playlist:5fuVr1szgGwogkEKUPXFlI"}',
+            //   beforeSend: function (xhr) {
+            //     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            //   },
+            //   success: function (data) {
+            //     console.log('ajax -> ', data);
+            //   },
+            // });
+          };
+
+          player.addListener('ready', ({ device_id }) => {
+            console.log('Ready with Device ID', device_id);
+            play(device_id);
+          });
+
+          // Not Ready
+          player.addListener('not_ready', ({ device_id }) => {
+            console.log('Device ID has gone offline', device_id);
+          });
+
+          // Connect to the player!
+
+          player.setName('Dance Party!');
+          player.connect();
+
+          player.on('player_state_changed', (state) => {
+            if (state.paused) {
+              document.getElementById('play').classList.replace('fa-pause', 'fa-play');
+              player.pause();
+              document.getElementById('album-image').style.animation = '';
+            } else {
+              document.getElementById('play').classList.replace('fa-play', 'fa-pause');
+              player.resume();
+              document.getElementById('album-image').style.animation = 'rotate 5s linear infinite';
+            }
+            document.getElementById('progress').value = (state.position / state.duration) * 1000;
+            getTracks();
+          });
+        };
+        setInterval(() => {
+          player.getCurrentState().then((state) => {
+            if (state != null) {
+              document.getElementById('progress').value = (state.position / state.duration) * 1000;
+            }
+          });
+        }, 1000);
+      } else {
+        document.getElementById('song-list').innerHTML += "<div id='authorize'><i class='fab fa-spotify'></i>Sign in with Spotify</div>";
+        document.getElementById('authorize').addEventListener('click', authorize);
       }
-    }
 
-    function hash() {
-      const hash = window.location.hash
-        .substring(1)
-        .split('&')
-        .reduce(function (initial, item) {
-          if (item) {
-            var parts = item.split('=');
-            initial[parts[0]] = decodeURIComponent(parts[1]);
+      function toggle() {
+        player.getCurrentState().then((state) => {
+          if (state.paused) {
+            document.getElementById('play').classList.replace('fa-play', 'fa-pause');
+            player.resume();
+            document.getElementById('album-image').style.animation = 'rotate 5s linear infinite';
+          } else {
+            document.getElementById('play').classList.replace('fa-pause', 'fa-play');
+            player.pause();
+            document.getElementById('album-image').style.animation = '';
           }
-          return initial;
-        }, {});
-      return hash.access_token;
-    }
+        });
+      }
 
-    function getTracks() {
-      let trackList;
-      player.getCurrentState().then(state => {
-        let tracks = [...state.track_window.previous_tracks, state.track_window.current_track, ...state.track_window.next_tracks]
-        console.log(tracks)
+      function authorize() {
+        // Set token
+        const token = hash();
 
-        trackList = tracks.map((track, key) => {
-          let image = track.album.images[0].url;
-          let name = track.name;
-          let artists = track.artists
-            .map(artist => {
-              return artist.name;
-            }).join(", ")
+        const authEndpoint = 'https://accounts.spotify.com/authorize';
+        const clientId = '2ca11aea349e46dda03164bae582644e';
+        const redirectUri = 'http://localhost:1234';
+        const scopes = ['streaming', 'user-modify-playback-state'];
+        if (!token) {
+          window.location = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join('%20')}&response_type=token&show_dialog=true`;
+        }
+      }
 
-          return `<div class="song-entry" onclick="changeTrack(${key})"><img src="${image}" class="song-image"/><div><h3>${name}</h3><p>${artists}</p></div></div>`;
-        }).join("")
+      function hash() {
+        const hash = window.location.hash
+          .substring(1)
+          .split('&')
+          .reduce(function (initial, item) {
+            if (item) {
+              var parts = item.split('=');
+              initial[parts[0]] = decodeURIComponent(parts[1]);
+            }
+            return initial;
+          }, {});
+        return hash.access_token;
+      }
 
-      });
+      function getTracks() {
+        player.getCurrentState().then((state) => {
+          let tracks = [...state.track_window.previous_tracks, state.track_window.current_track, ...state.track_window.next_tracks];
 
-      console.log(trackList)
-      document.getElementById("song-list").innerHTML += list;
-    }
-  </script>
-</body>
+          trackList = tracks
+            .map((track) => {
+              let image = track.album.images[0].url;
+              let name = track.name;
+              let artists = track.artists
+                .map((artist) => {
+                  return artist.name;
+                })
+                .join(', ');
 
+              return `<div class="song-entry"><img src="${image}" class="song-image"/><div><h3>${name}</h3><p>${artists}</p></div></div>`;
+            })
+            .join('');
+        });
+        console.log(trackList);
+        document.getElementById('song-list').innerHTML = "<h1 class='song-header'>Songs</h1>" + trackList;
+      }
+    </script>
+  </body>
 </html>

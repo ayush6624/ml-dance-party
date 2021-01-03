@@ -6,8 +6,8 @@ import Two from 'two.js';
 
 let poseDetector = new PoseDetector(loop);
 
-// const socket = io('ws://localhost:3030');
-const socket = io('https://dance.ayushgoyal.dev');
+const socket = io('http://localhost:3030');
+// const socket = io('https://dance.ayushgoyal.dev');
 
 socket.on('message', (text) => {
   console.log(text);

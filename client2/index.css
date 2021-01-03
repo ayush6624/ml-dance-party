@@ -83,8 +83,8 @@ Sidebar
 }
 
 .controls {
- padding: 0 0.5rem; 
- border-top: 1px solid var(--text-color-alt);
+  padding: 0 0.5rem;
+  border-top: 1px solid var(--text-color-alt);
 }
 
 .volume {
@@ -92,9 +92,9 @@ Sidebar
   align-items: center;
 }
 
-input[type="range"] {
+input[type='range'] {
   margin-left: 0.5rem;
-  -webkit-appearance: none;  /* Override default CSS styles */
+  -webkit-appearance: none; /* Override default CSS styles */
   appearance: none;
   height: 6px; /* Specified height */
   background: var(--text-color-alt); /* Grey background */
@@ -111,7 +111,7 @@ input[type="range"] {
   margin: auto;
 }
 
-input[type="range"]::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none; /* Override default look */
   appearance: none;
   width: 16px; /* Set a specific slider handle width */
@@ -121,7 +121,7 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 8px;
 }
 
-input[type="range"]::-moz-range-thumb {
+input[type='range']::-moz-range-thumb {
   -webkit-appearance: none; /* Override default look */
   appearance: none;
   width: 16px; /* Set a specific slider handle width */
@@ -152,6 +152,40 @@ input[type="range"]::-moz-range-thumb {
   border-bottom: 1px solid var(--text-color-alt);
 }
 
+#song-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.song-entry {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  padding-left: 0.5rem;
+  border-bottom: 1px solid var(--text-color-alt);
+}
+
+.song-entry:last-of-type {
+  border-bottom: none;
+}
+
+.song-entry img {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  margin-right: 1rem;
+}
+
+.song-entry h3 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.song-entry p {
+  font-size: 16px;
+  margin: 0;
+}
+
 #song-info {
   display: flex;
   align-items: center;
@@ -165,12 +199,12 @@ input[type="range"]::-moz-range-thumb {
   margin-right: 1rem;
 }
 
-#song-info h3{
+#song-info h3 {
   font-size: 16px;
   margin: 0;
 }
 
-#song-info p{
+#song-info p {
   font-size: 16px;
   margin: 0;
 }
@@ -190,8 +224,12 @@ input[type="range"]::-moz-range-thumb {
 }
 
 @keyframes rotate {
-  from {transform: rotate(0);}
-  to {transform: rotate(360deg);}
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /************
