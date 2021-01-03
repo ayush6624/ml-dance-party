@@ -46,11 +46,12 @@ svg {
   position: fixed;
 }
 
-.buttons {
-  position: absolute;
-  z-index: 99;
-  bottom: 0;
-  margin: 50px;
+#record-button {
+  border: none;
+  border-bottom: 1px solid var(--text-color-alt);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
 }
 
 #count-down {
@@ -72,6 +73,7 @@ Sidebar
 
 .sidebar {
   flex-grow: 1;
+  width: 25vw;
   margin-left: 0;
   align-self: stretch;
   border-left: 1px solid var(--text-color-alt);
